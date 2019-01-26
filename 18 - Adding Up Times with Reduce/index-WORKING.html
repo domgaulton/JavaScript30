@@ -182,6 +182,43 @@
     </li>
   </ul>
 <script>
+
+  // Turn to array when setting up constant so we can map
+  const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+
+  // console.log(timeNodes);
+
+  // get the times
+  const seconds = timeNodes
+    .map(timeNode => timeNode.dataset.time)
+    .map(timeCode => {
+      // console.log(timeCode);
+      // Destructure to set variables for mins and secs - [first, second] returned. At the moment this is just string but .map(parseFloat) maps through an turns to numbers
+      const [mins, secs] = timeCode.split(':').map(parseFloat);
+      return (mins * 60) + secs
+      // console.log(mins, secs);
+    })
+    // Reduce the whole array to single seconds value
+    // .reduce((accumulator, currentValue) => {
+    //   return accumulator + currentValue;
+    // })
+    // with ES6
+    .reduce((accumulator, currentValue) => accumulator + currentValue);
+
+    // Maths to turn seconds into hours with remainder
+    let secondsLeft = seconds;
+    const hours = Math.floor(secondsLeft / 3600);
+    secondsLeft = secondsLeft % 3600;
+
+    // Minutes from the left over seconds
+    const mins = Math.floor(secondsLeft / 60);
+    
+    // What is left over is the seconds left after dividing by 60
+    secondsLeft = secondsLeft % 60;
+
+    console.log(hours, mins, secondsLeft);
+
+
 </script>
 </body>
 </html>
