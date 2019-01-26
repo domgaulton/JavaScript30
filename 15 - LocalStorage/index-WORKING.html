@@ -26,9 +26,79 @@
   </div>
 
 <script>
+
+  // EVENT DELEGATION - Normally when you add an item to the page, you can't trigger the event listener as these are set on page load.
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  
+  // It's either the local storage item (parsed) or a blank array
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  function addItem(e){
+    // stop page reloading (Use preserve log in console to see whats happening)
+    e.preventDefault();
+    // console.log(e);
+    // console.log(this);
+    // Use brackets so the querySelector runs first
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      // text: text, shorthand
+      text,
+      done: false
+    }
+    // Take the item and put it in the array
+    items.push(item)
+    // console.table(items);
+
+    // Run the function
+    populateList(items, itemsList);
+    // Add to local storage item 'items' - but must stringify as local storage can only accept a string, not the object we have
+    localStorage.setItem('items', JSON.stringify(items));
+
+    // Clear the form element
+    this.reset();
+  }
+
+  // set default value so that JS wont break if empty element added. Should sanitise it in reality
+  // Pass array, and a HTML element
+  function populateList(plates = [], platesList){
+    const listHTML = plates.map((plate, i) => {
+      // Checkbox either checked (attribute in HTML) or not
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `;
+      // Map returns an array, but we want a string so join with blank character (no spaces)
+    }).join('');
+    platesList.innerHTML = listHTML;
+  }
+
+  function toggleDone(e){
+    // check if target is an input and skip over AKA we only want to target the inputs!
+    if(!e.target.matches('input')) return;
+    // console.log(e.target);
+    // Find the item and change object value to true
+    const index = e.target.dataset.index; // Created above in the populateList map
+    // set the property to the opposite of what it is (Toggle)
+    items[index].done = !items[index].done
+
+    // EVERYTIME WE MAKE A CHANGE WE ADD TO LOCAL STORAGE THEN RE RENDER ENTIRE LIST
+    // Add it to local storage
+    localStorage.setItem('items', JSON.stringify(items));
+    // Run function again
+    populateList(items, itemsList);
+  }
+
+  // Submit covers all bases for item
+  addItems.addEventListener('submit', addItem);
+  // Delegate the responsibility to the parent as the parent is on the page from the start
+  itemsList.addEventListener('click', toggleDone);
+
+
+  // On page load run populate list
+  populateList(items, itemsList);
 
 </script>
 
