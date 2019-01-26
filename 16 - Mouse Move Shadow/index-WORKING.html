@@ -35,6 +35,48 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+  const walk = 500; // 500px
+
+  function shadow(e){
+    // const width = hero.offsetWidth;
+    // const height = hero.offsetHeight;
+
+    // same as above but with es6 destructuring
+    const { offsetWidth: width, offsetHeight: height } = hero;
+    // again destructuring
+    let { offsetX: x, offsetY: y } = e // from event
+    // working but has weird coordinates when you hover on the text (coordinates from child element)
+    // console.log(x, y);
+
+    // See what you're hovering on
+    // console.log(this, e.target);
+    // if you're not hovering / moving mouse on the hero
+    if (this !== e.target) {
+      // refactor the coordinates
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    // This is now adjusted and doesn't get ruined when you hover on text element
+    // console.log(x, y);
+
+    // The walk max should be max 250px and min -250px!
+    const xWalk = Math.round((x / width * walk) - (walk / 2));
+    const yWalk = Math.round((y / height * walk) - (walk / 2));
+
+    console.log(xWalk, yWalk)
+
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(255,0,255,0.7),
+
+    `;
+  }
+
+  // Event listener
+  hero.addEventListener('mousemove', shadow);
+
 </script>
 </body>
 </html>
