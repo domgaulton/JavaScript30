@@ -28,7 +28,7 @@
     }
     #bands li {
       border-bottom: 1px solid #efefef;
-      padding: 20px;
+      padding: 10px;
     }
     #bands li:last-child {
       border-bottom: 0;
@@ -44,8 +44,35 @@
   <ul id="bands"></ul>
 
 <script>
-const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
+  const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+  // Function to strip the start of the band name - notice it only strips on the sort function and never gets rendered to the page
+  function stripName(bandName){
+    // ^ = starts with
+    // i = insensitive
+    // '' = replace with nothing
+    return bandName.replace(/^(a |the |an )/i, '').trim();
+  }
+
+  // // Sort without A / The etc. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+  // const sortedBands = bands.sort(function(a,b) {
+  //   // // can still do this even with strings - showing long way here 
+  //   // if (stripName(a) > stripName(b)){
+  //   //   return 1;
+  //   // } else {
+  //   //   return -1;
+  //   // }
+
+  //   // // ES6
+  //   // return stripName(a) > stripName(b) ? 1 : -1
+  // })
+
+  // Above commented out on one line below!
+  const sortedBands = bands.sort((a,b) => stripName(a) > stripName(b) ? 1 : -1 )
+
+  // rendering sortedBands
+  document.querySelector('#bands').innerHTML =
+  sortedBands.map(band => `<li>${band}</li>`).join(''); // map function to map through and add li element wrapper
 
 </script>
 
